@@ -1,0 +1,31 @@
+name: clube_valor
+version: '1.0.0'
+config-version: 2
+
+profile: clube_valor
+
+model-paths: [models]
+seed-paths: [seeds]
+test-paths: [tests]
+macro-paths: [macros]
+
+clean-targets:
+  - target
+  - dbt_packages
+
+seeds:
+  clube_valor:
+    +schema: 01_RAW
+    +group: 01_RAW
+
+models:
+  clube_valor:
+    staging:
+      +schema: 02_STG
+      +group: 02_STG
+    intermediate:
+      +schema: 03_INT
+      +group: 03_INT
+    marts:
+      +schema: 04_MART
+      +group: 04_MART

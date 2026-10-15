@@ -1,0 +1,7 @@
+clube_valor:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: data/clube_valor.duckdb
+      threads: 1

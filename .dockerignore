@@ -1,0 +1,5 @@
+.git
+data/*
+.dbt/.user.yml
+.dbt/logs/
+.dbt/target/

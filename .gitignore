@@ -1,0 +1,23 @@
+# Arquivos de referência locais
+/reference/
+
+# Artefatos gerados pelo dbt
+/target/
+/logs/
+
+# Cache Python
+__pycache__/
+*.py[cod]
+.venv/
+/venv_clube_valor/
+/data/*
+!/data/.gitkeep
+/.dbt/logs/
+/.dbt/target/
+/.dbt/.user.yml
+
+# Docs apoio
+/docs/
+
+# Configuração local do editor (inclui caminho absoluto do DuckDB)
+/.vscode/

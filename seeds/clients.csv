@@ -1,0 +1,28 @@
+client_id,name,city,state,created_at
+C1,Ana Souza,Sao Paulo,SP,2023-01-10
+C2,Bruno Lima,Rio de Janeiro,RJ,2023-02-14
+C3,Carla Mendes,Curitiba,PR,2023-03-05
+C4,Diego Rocha,Belo Horizonte,MG,2023-03-22
+C5,Elena Costa,Porto Alegre,RS,2023-04-11
+C6,Felipe Nunes,Brasilia,DF,2023-04-30
+C7,Gabriela Alves,Salvador,BA,2023-05-17
+C8,Henrique Pinto,Fortaleza,CE,2023-06-02
+C9,Isabela Ferreira,Recife,PE,2023-06-19
+C10,Joao Martins,Manaus,AM,2023-07-08
+C11,Karen Ribeiro,Florianopolis,SC,2023-07-25
+C12,Lucas Dias,Goiania,GO,2023-08-13
+C13,Mariana Teixeira,Natal,RN,2023-08-28
+C14,Nicolas Barbosa,Belem,PA,2023-09-10
+C15,Olivia Carvalho,Vitoria,ES,2023-09-24
+C16,Pedro Araujo,Campinas,SP,2023-10-07
+C17,Quintina Moura,Santos,SP,2023-10-20
+C18,Rafael Gomes,Ribeirao Preto,SP,2023-11-03
+C19,Sandra Oliveira,Sao Luis,MA,2023-11-18
+C20,Thiago Pereira,Joao Pessoa,PB,2023-12-01
+C21,Ursula Nascimento,Maceio,AL,2023-12-15
+C22,Victor Campos,Teresina,PI,2023-12-28
+C23,Wanessa Lima,Campo Grande,MS,2024-01-10
+C24,Xavier Rocha,Cuiaba,MT,2024-01-22
+C25,Yasmin Costa,Porto Velho,RO,2024-02-04
+C6,Felipe Nunes,,DF,2023-04-30
+C1,Ana Souza,Sao Paulo,SP,2023-01-10

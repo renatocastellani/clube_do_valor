@@ -1,0 +1,258 @@
+version: 2
+
+seeds:
+  - name: clients
+    description: Cadastro de clientes recebido para o case. É a fonte das informações de identificação e localização usadas nas análises de carteira. Os dados são mantidos como foram recebidos, inclusive lacunas e duplicidades, para que os controles de qualidade possam apontá-las; tecnicamente, é carregado pelo comando `dbt seed`.
+    columns:
+      - name: client_id
+        description: Identificador informado para o cliente no arquivo de origem.
+      - name: name
+        description: Nome informado para o cliente no cadastro bruto.
+      - name: city
+        description: Cidade informada para o cliente; o arquivo contém ausência intencional para validação de qualidade.
+      - name: state
+        description: Sigla da unidade federativa informada no cadastro bruto.
+      - name: created_at
+        description: Data de criação do cadastro, ainda no formato fornecido no CSV.
+
+  - name: transactions
+    description: Histórico de compras e vendas de ativos recebido para o case. É a fonte usada para calcular movimentações e a posição de cada cliente em cada ativo. Os dados são carregados sem alteração e passam por verificações de preenchimento e consistência na etapa seguinte; tecnicamente, é carregado pelo comando `dbt seed`.
+    columns:
+      - name: transaction_id
+        description: Identificador informado para a operação no arquivo de origem.
+      - name: client_id
+        description: Identificador do cliente associado à operação no arquivo de origem.
+      - name: asset_ticker
+        description: Código do ativo negociado informado no arquivo de origem.
+      - name: operation
+        description: Operação de compra ou venda informada no arquivo de origem.
+      - name: quantity
+        description: Quantidade negociada antes da conversão de tipo aplicada no staging.
+      - name: unit_price
+        description: Preço unitário da operação antes da conversão de tipo aplicada no staging.
+      - name: transaction_date
+        description: Data da operação antes da conversão para data aplicada no staging.
+
+models:
+  - name: stg_transactions
+    description: Visão de transações pronta para as análises seguintes. Mantém apenas compras e vendas com as informações mínimas necessárias, como cliente, ativo, quantidade, preço e data, evitando que registros incompletos ou inválidos avancem no processo. Tecnicamente, padroniza o tipo da operação e converte quantidade, preço e data para tipos adequados de consulta.
+    columns:
+      - name: transaction_id
+        description: Identificador da transação.
+        tests:
+          - not_null
+          - unique
+      - name: client_id
+        description: Identificador do cliente que realizou a operação.
+        tests:
+          - not_null
+      - name: asset_ticker
+        description: Código do ativo negociado.
+        tests:
+          - not_null
+      - name: operation
+        description: Tipo da operação realizada.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['BUY', 'SELL']
+      - name: quantity
+        description: Quantidade de ativos negociada.
+        tests:
+          - not_null
+      - name: unit_price
+        description: Preço unitário do ativo na operação.
+        tests:
+          - not_null
+      - name: transaction_date
+        description: Data da operação.
+        tests:
+          - not_null
+
+  - name: stg_clients
+    description: Visão do cadastro de clientes preparada para uso nas análises. Organiza os dados de identificação, localização e criação do cadastro, removendo apenas registros sem informações essenciais. Cidade ausente e clientes repetidos são preservados para que os controles de qualidade os evidenciem; tecnicamente, a data de criação é convertida para o formato de data.
+    columns:
+      - name: client_id
+        description: Identificador informado para o cliente.
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: Nome do cliente.
+        tests:
+          - not_null
+      - name: city
+        description: Cidade de residência do cliente.
+        tests:
+          - not_null
+      - name: state
+        description: Unidade federativa de residência do cliente.
+        tests:
+          - not_null
+      - name: created_at
+        description: Data de criação do cadastro.
+        tests:
+          - not_null
+
+  - name: int_transactions
+    description: Visão que relaciona cada transação válida ao cliente que a realizou e calcula seu valor financeiro. Quando há mais de um cadastro para o mesmo cliente, escolhe um único cadastro, priorizando o que possui cidade preenchida, para que uma mesma operação não seja contada mais de uma vez. Os problemas do cadastro continuam disponíveis para os testes; tecnicamente, essa escolha é feita antes do `left join` por `client_id`.
+    columns:
+      - name: transaction_id
+        description: Identificador da transação.
+        tests:
+          - not_null
+          - unique
+      - name: client_id
+        description: Identificador do cliente.
+        tests:
+          - not_null
+      - name: client_name
+        description: Nome do cliente associado à transação.
+      - name: city
+        description: Cidade do cliente associado à transação.
+      - name: state
+        description: Estado do cliente associado à transação.
+      - name: client_created_at
+        description: Data de criação do cadastro do cliente.
+      - name: asset_ticker
+        description: Código do ativo negociado.
+      - name: operation
+        description: Tipo da operação realizada.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['BUY', 'SELL']
+      - name: quantity
+        description: Quantidade de ativos negociada.
+      - name: unit_price
+        description: Preço unitário do ativo na operação.
+      - name: transaction_value
+        description: Valor financeiro bruto da transação.
+      - name: transaction_date
+        description: Data da operação.
+
+  - name: fact_transactions
+    description: Tabela central de operações para análise de compras e vendas. Mantém uma linha por transação válida, com quantidade, preço, valor financeiro e data, servindo de base para a carteira. Ela é atualizada de forma incremental, adicionando somente transações posteriores à última data carregada; tecnicamente, usa `transaction_id` como chave da carga incremental.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: transaction_id
+        description: Identificador da transação.
+        data_type: VARCHAR
+        tests:
+          - not_null
+          - unique
+      - name: client_id
+        description: Identificador do cliente.
+        data_type: VARCHAR
+        tests:
+          - not_null
+      - name: asset_ticker
+        description: Código do ativo negociado.
+        data_type: VARCHAR
+        tests:
+          - not_null
+      - name: operation
+        description: Tipo da operação realizada.
+        data_type: VARCHAR
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['BUY', 'SELL']
+      - name: quantity
+        description: Quantidade de ativos negociada.
+        data_type: INTEGER
+        tests:
+          - not_null
+      - name: unit_price
+        description: Preço unitário do ativo na operação.
+        data_type: FLOAT
+        tests:
+          - not_null
+      - name: transaction_value
+        description: Valor financeiro bruto da transação.
+        data_type: FLOAT
+        tests:
+          - not_null
+      - name: transaction_date
+        description: Data da operação.
+        data_type: DATE
+        tests:
+          - not_null
+
+  - name: dim_clients
+    description: Tabela de referência de clientes para consultas e relatórios. Reúne os dados cadastrais preparados, como nome, cidade, estado e data de criação. Mantém as lacunas e repetições recebidas na origem para que sejam tratadas como alertas de qualidade, e é construída diretamente a partir da visão de clientes.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: client_id
+        description: Identificador informado para o cliente.
+        data_type: VARCHAR
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: Nome do cliente.
+        data_type: VARCHAR
+        tests:
+          - not_null
+      - name: city
+        description: Cidade de residência do cliente.
+        data_type: VARCHAR
+        tests:
+          - not_null
+      - name: state
+        description: Unidade federativa de residência do cliente.
+        data_type: VARCHAR
+        tests:
+          - not_null
+      - name: created_at
+        description: Data de criação do cadastro.
+        data_type: DATE
+        tests:
+          - not_null
+
+  - name: mart_client_portfolio
+    description: Tabela que mostra a posição atual de cada cliente em cada ativo. Soma as compras e desconta as vendas para apresentar quantidade e valor financeiro líquidos, servindo como visão final de carteira. Tecnicamente, agrupa as operações por cliente e ativo e usa a macro `signed_operation_value` para aplicar o sinal de cada operação.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: client_id
+        description: Identificador do cliente.
+        data_type: VARCHAR
+        tests:
+          - not_null
+      - name: asset_ticker
+        description: Código do ativo.
+        data_type: VARCHAR
+        tests:
+          - not_null
+      - name: net_quantity
+        description: Posição líquida em quantidade, calculada como BUY menos SELL.
+        data_type: HUGEINT
+        tests:
+          - not_null
+      - name: net_value
+        description: Posição líquida financeira, calculada como BUY menos SELL.
+        data_type: DOUBLE
+        tests:
+          - not_null
+
+macros:
+  - name: generate_schema_name
+    description: "Define o schema físico em que cada camada aparece no DuckDB. Mantém o schema padrão quando não há um schema configurado e, quando há, usa diretamente o nome informado, como `01_RAW` ou `04_MART`, sem acrescentar prefixos técnicos."
+    arguments:
+      - name: custom_schema_name
+        description: Nome do schema físico configurado para a camada.
+      - name: node
+        description: Objeto dbt para o qual o grupo está sendo definido.
+  - name: signed_operation_value
+    description: "Regra reutilizável que representa compras como valores positivos e vendas como valores negativos. Ela permite calcular a posição líquida de quantidade e de valor da carteira de forma consistente. Tecnicamente, é chamada por `mart_client_portfolio` para aplicar o sinal às medidas de cada operação."
+    arguments:
+      - name: column_name
+        description: Nome da coluna numérica de `fact_transactions` à qual a regra de sinal será aplicada.

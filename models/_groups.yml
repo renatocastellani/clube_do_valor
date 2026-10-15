@@ -1,0 +1,20 @@
+groups:
+  - name: 01_RAW
+    description: Dados de origem recebidos para o case, sem transformação manual.
+    owner:
+      name: Renato Castellani
+
+  - name: 02_STG
+    description: Dados preparados para análise, com tipagem e filtros mínimos de validade.
+    owner:
+      name: Renato Castellani
+
+  - name: 03_INT
+    description: Transações enriquecidas com dados de clientes e valor financeiro calculado.
+    owner:
+      name: Renato Castellani
+
+  - name: 04_MART
+    description: Tabelas finais para consulta de clientes, transações e carteira.
+    owner:
+      name: Renato Castellani
