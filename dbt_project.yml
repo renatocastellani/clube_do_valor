@@ -13,6 +13,9 @@ clean-targets:
   - target
   - dbt_packages
 
+data_tests:
+  +store_failures: true
+
 seeds:
   clube_valor:
     +schema: 01_RAW

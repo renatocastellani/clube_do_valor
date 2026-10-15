@@ -6,32 +6,71 @@ seeds:
     columns:
       - name: client_id
         description: Identificador informado para o cliente no arquivo de origem.
+        tests:
+          - not_null
+          - unique
       - name: name
         description: Nome informado para o cliente no cadastro bruto.
+        tests:
+          - not_null:
+              config:
+                severity: warn
       - name: city
         description: Cidade informada para o cliente; o arquivo contém ausência intencional para validação de qualidade.
+        tests:
+          - not_null:
+              config:
+                severity: warn
       - name: state
         description: Sigla da unidade federativa informada no cadastro bruto.
+        tests:
+          - not_null:
+              config:
+                severity: warn
       - name: created_at
         description: Data de criação do cadastro, ainda no formato fornecido no CSV.
+        tests:
+          - not_null:
+              config:
+                severity: warn
 
   - name: transactions
     description: Histórico de compras e vendas de ativos recebido para o case. É a fonte usada para calcular movimentações e a posição de cada cliente em cada ativo. Os dados são carregados sem alteração e passam por verificações de preenchimento e consistência na etapa seguinte; tecnicamente, é carregado pelo comando `dbt seed`.
     columns:
       - name: transaction_id
         description: Identificador informado para a operação no arquivo de origem.
+        tests:
+          - not_null
+          - unique
       - name: client_id
         description: Identificador do cliente associado à operação no arquivo de origem.
+        tests:
+          - not_null
       - name: asset_ticker
         description: Código do ativo negociado informado no arquivo de origem.
+        tests:
+          - not_null
       - name: operation
         description: Operação de compra ou venda informada no arquivo de origem.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['BUY', 'SELL']
       - name: quantity
         description: Quantidade negociada antes da conversão de tipo aplicada no staging.
+        tests:
+          - not_null
       - name: unit_price
         description: Preço unitário da operação antes da conversão de tipo aplicada no staging.
+        tests:
+          - not_null
       - name: transaction_date
         description: Data da operação antes da conversão para data aplicada no staging.
+        tests:
+          - not_null:
+              config:
+                severity: warn
 
 models:
   - name: stg_transactions
@@ -68,7 +107,9 @@ models:
       - name: transaction_date
         description: Data da operação.
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
 
   - name: stg_clients
     description: Visão do cadastro de clientes preparada para uso nas análises. Organiza os dados de identificação, localização e criação do cadastro, removendo apenas registros sem informações essenciais. Cidade ausente e clientes repetidos são preservados para que os controles de qualidade os evidenciem; tecnicamente, a data de criação é convertida para o formato de data.
@@ -81,19 +122,27 @@ models:
       - name: name
         description: Nome do cliente.
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
       - name: city
         description: Cidade de residência do cliente.
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
       - name: state
         description: Unidade federativa de residência do cliente.
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
       - name: created_at
         description: Data de criação do cadastro.
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
 
   - name: int_transactions
     description: Visão que relaciona cada transação válida ao cliente que a realizou e calcula seu valor financeiro. Quando há mais de um cadastro para o mesmo cliente, escolhe um único cadastro, priorizando o que possui cidade preenchida, para que uma mesma operação não seja contada mais de uma vez. Os problemas do cadastro continuam disponíveis para os testes; tecnicamente, essa escolha é feita antes do `left join` por `client_id`.
@@ -181,10 +230,12 @@ models:
         description: Data da operação.
         data_type: DATE
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
 
   - name: dim_clients
-    description: Tabela de referência de clientes para consultas e relatórios. Reúne os dados cadastrais preparados, como nome, cidade, estado e data de criação. Mantém as lacunas e repetições recebidas na origem para que sejam tratadas como alertas de qualidade, e é construída diretamente a partir da visão de clientes.
+    description: 'Tabela de referência de clientes para consultas e relatórios. Reúne os dados cadastrais preparados, como nome, cidade, estado e data de criação. Mantém os desvios recebidos na origem visíveis: ausências cadastrais são alertas e identificadores duplicados são falhas críticas. É construída diretamente a partir da visão de clientes.'
     config:
       contract:
         enforced: true
@@ -199,22 +250,30 @@ models:
         description: Nome do cliente.
         data_type: VARCHAR
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
       - name: city
         description: Cidade de residência do cliente.
         data_type: VARCHAR
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
       - name: state
         description: Unidade federativa de residência do cliente.
         data_type: VARCHAR
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
       - name: created_at
         description: Data de criação do cadastro.
         data_type: DATE
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
 
   - name: mart_client_portfolio
     description: Tabela que mostra a posição atual de cada cliente em cada ativo. Soma as compras e desconta as vendas para apresentar quantidade e valor financeiro líquidos, servindo como visão final de carteira. Tecnicamente, agrupa as operações por cliente e ativo e usa a macro `signed_operation_value` para aplicar o sinal de cada operação.
