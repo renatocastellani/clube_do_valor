@@ -112,8 +112,6 @@ As linhas representam relações lógicas por identificadores, usadas para facil
 
 ![Diagrama lógico das relações entre as camadas](images/image_logic_diagram.png)
 
-O arquivo editável para importar no [dbdiagram.io](https://dbdiagram.io) é [`docs/DIAGRAMA.dbml`](docs/DIAGRAMA.dbml).
-
 ## Pipeline dbt e arquitetura medalhão
 
 O pipeline organiza a transformação dos dados em camadas, da origem ao consumo analítico:
