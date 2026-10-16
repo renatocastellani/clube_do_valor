@@ -2,6 +2,11 @@
 
 Projeto dbt para carregar transações e clientes em DuckDB, aplicar as transformações e validar a qualidade dos dados.
 
+# Sobre mim
+
+![alt text](images/image.png)
+
+https://www.linkedin.com/in/renatocastellani/
 
 # Como executar o projeto
 
@@ -19,7 +24,7 @@ Projeto dbt para carregar transações e clientes em DuckDB, aplicar as transfor
 ├── data/                    # banco DuckDB e relatórios gerados localmente
 ├── seeds/                   # CSVs de entrada versionados
 ├── models/
-│   ├── _groups.yml          # grupos exibidos no dbt Docs
+│   ├── _groups.yml          # agrupamento lógico dos modelos
 │   ├── schema.yml           # documentação, testes e contratos
 │   ├── staging/             # padronização, tipos e filtros
 │   ├── intermediate/        # regras intermediárias
@@ -29,7 +34,7 @@ Projeto dbt para carregar transações e clientes em DuckDB, aplicar as transfor
 └── tests/                   # testes singulares
 ```
 
-No DuckDB, os objetos ficam organizados por schemas de camada. No dbt Docs, as mesmas camadas aparecem na aba **Group**:
+No DuckDB, os objetos ficam organizados por schemas de camada:
 
 | Camada | Conteúdo |
 | --- | --- |
@@ -70,8 +75,8 @@ O `dbt test` valida a qualidade dos dados e identifica inconsistências de chave
 
 ## Extras de observabilidade — não exigidos no case
 
-- **dbt Docs:** facilita a navegação pela documentação e pelo lineage das transformações.
 - **Relatório HTML de testes:** torna alertas, falhas e registros afetados fáceis de consultar sem ler o log do terminal.
+- **Relatório HTML de build:** evidencia recursos executados, bloqueados ou ignorados no gate integrado.
 - **Profiling YData:** oferece uma visão exploratória da distribuição e qualidade de cada tabela ou view.
 
 Após executar os comandos obrigatórios, gere o profiling e o relatório HTML de testes:
@@ -92,20 +97,19 @@ python scripts/generate_build_results_report.py
 
 O resultado fica em `data/metadata/results_build/last_build_results.html`. Ele usa o `run_results.json` do build para mostrar seeds, modelos, testes, alertas, falhas e recursos downstream bloqueados.
 
-Nesse fluxo, `dbt build` já executa os seeds, modelos e testes; não rode `dbt test` antes de gerar o relatório do build, pois isso substituiria o JSON usado por ele.
+Nesse fluxo, `dbt build` já executa os seeds, modelos e testes. Gere o relatório imediatamente depois dele; outro comando dbt substituiria o `run_results.json` usado pelo relatório.
 
 O profiling YData fica em `data/metadata/results_profiling/`. O relatório fica em `data/metadata/results_tests/last_test_results.html`, agrupa os testes por tabela ou view e permite abrir o profiling correspondente. Os registros de alertas e falhas são armazenados no schema técnico `dbt_test__audit`.
 
-Para gerar a documentação e visualizar o lineage:
+Para gerar todos os artefatos de documentação e observabilidade em uma única sequência, execute:
 
 ```bash
-dbt docs generate
-dbt docs serve --host 0.0.0.0 --port 8080
+bash scripts/generate_all_docs.sh
 ```
 
-Abra `http://localhost:8080`.
+O script preserva os dois resultados separadamente: executa `dbt seed`, `dbt run` e `dbt test`, gerando o relatório de testes logo em seguida; depois executa `dbt build` e gera o relatório de build. O profiling é criado após o `dbt run`, quando as relações existem. Falhas de qualidade não interrompem a geração dos relatórios, mas fazem o script terminar com código diferente de zero.
 
-Para sair:
+Ao terminar os comandos dentro do contêiner, retorne ao terminal do host com:
 
 ```bash
 exit
@@ -135,10 +139,6 @@ O pipeline organiza a transformação dos dados em camadas, da origem ao consumo
 2. **STG — preparação:** `stg_clients` e `stg_transactions` renomeiam e tipam os campos, além de remover registros sem chaves ou valores necessários para as transformações.
 3. **INT — enriquecimento:** `int_transactions` relaciona cada transação a um cadastro de cliente e calcula o valor financeiro da operação.
 4. **MART — consumo:** `dim_clients` disponibiliza a dimensão de clientes; `fact_transactions` materializa a fato incremental; e `mart_client_portfolio` consolida a posição por cliente e ativo.
-
-No dbt Docs, essas camadas aparecem agrupadas para facilitar a navegação:
-
-![Grupos da arquitetura no dbt Docs](images/image_groups.png)
 
 `fact_transactions` usa `transaction_date` como controle incremental: novas execuções carregam somente datas posteriores à maior data já existente. Essa decisão é adequada ao escopo do case, mas não reprocessa eventos atrasados nem corrige registros históricos.
 
