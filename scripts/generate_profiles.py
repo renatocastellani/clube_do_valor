@@ -7,7 +7,7 @@ from ydata_profiling import ProfileReport
 
 
 DATABASE_PATH = Path("/app/data/clube_valor.duckdb")
-OUTPUT_DIR = Path("/app/data/metadata/profiling")
+OUTPUT_DIR = Path("/app/data/metadata/results_profiling")
 
 
 def quote_identifier(value):

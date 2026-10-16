@@ -81,7 +81,20 @@ python scripts/generate_profiles.py
 python scripts/generate_test_results_report.py
 ```
 
-O profiling YData fica em `data/metadata/profiling/`. O relatório fica em `data/metadata/tests/last_test_results.html`, agrupa os testes por tabela ou view e permite abrir o profiling correspondente. Os registros de alertas e falhas são armazenados no schema técnico `dbt_test__audit`.
+O relatório de testes deve ser gerado logo após `dbt test`, porque cada comando dbt substitui o `.dbt/target/run_results.json`. O profiling precisa vir depois de `dbt run` ou `dbt build`, quando as relações já existem; execute-o antes do relatório HTML para habilitar os links de profiling.
+
+Para visualizar uma execução com o gate do dbt, use o build e gere o relatório correspondente:
+
+```bash
+dbt build
+python scripts/generate_build_results_report.py
+```
+
+O resultado fica em `data/metadata/results_build/last_build_results.html`. Ele usa o `run_results.json` do build para mostrar seeds, modelos, testes, alertas, falhas e recursos downstream bloqueados.
+
+Nesse fluxo, `dbt build` já executa os seeds, modelos e testes; não rode `dbt test` antes de gerar o relatório do build, pois isso substituiria o JSON usado por ele.
+
+O profiling YData fica em `data/metadata/results_profiling/`. O relatório fica em `data/metadata/results_tests/last_test_results.html`, agrupa os testes por tabela ou view e permite abrir o profiling correspondente. Os registros de alertas e falhas são armazenados no schema técnico `dbt_test__audit`.
 
 Para gerar a documentação e visualizar o lineage:
 
@@ -178,5 +191,40 @@ Os três alertas representam o mesmo problema cadastral: uma cidade ausente, pre
 
 ## Próximos passos
 
-Se fosse um caso real, o próximo passo seria entender o motivo da causa raíz das incosistências. E conversar com os especialistas nesses dados (tanto de TI quanto de negócio) buscando encontrar uma solução para evitar que o problema se repita.
-Então seriam corrigidas as causas raízes e também corrigidos os dados inválidos. E reprocessados para consumo analítico.
+A proposta do case é forçar a execução e envio de dados materializados para camada de consumo e rodar os testes de validação e qualidade dos dados.
+
+Mas em ambiente produtivo ao invés de rodar apenas o 
+
+```bash
+dbt seed
+```
+eu rodaria o 
+
+```bash
+dbt build
+```
+que tem o mesmo efeito do seed, mas com a vantagem de não fazer as validações de qualidade em busca de falhas críticas antes de enviar para materialização e consumo de ambiente produtivo.
+Então não precisaria do seed, somente o build e se houverem falhas graves como aconteceu no nosso caso, não rodaria o 'dbt run' antes de resolvê-los.
+
+O próximo passo é investigar a causa-raiz das inconsistências com as áreas de negócio e de TI. Além de corrigir os dados atuais, é necessário definir uma melhoria que evite a repetição do problema.
+
+### Investigações necessárias antes de enviar para produção
+As perguntas abaixo precisam ser respondidas antes de certificar os modelos para consumo em produção:
+
+1. **Clientes — identificadores duplicados**
+   - Por que existem registros com o mesmo `client_id`?
+   - A tabela é imutável e mantém o histórico de alterações cadastrais? Se sim, existe uma coluna de data ou versão para identificar o registro mais recente?
+   - Ou houve um erro na geração ou no controle dos identificadores?
+
+2. **Transações — quantidade negativa**
+   - A quantidade negativa representa uma correção, cancelamento ou estorno?
+   - Essa regra deve ser aceita no modelo ou o registro precisa ser corrigido na origem?
+
+3. **Transações — cliente não informado**
+   - Por que há transações sem `client_id`?
+   - A operação realmente ocorreu e pode ser associada posteriormente a um cliente?
+
+4. **Carteira — posição líquida negativa**
+   - Por que existem posições negativas no `mart_client_portfolio`?
+   - Há transações históricas ausentes que expliquem a diferença entre compras e vendas?
+   - A área de negócio permite posição vendida ou espera somente saldos não negativos?

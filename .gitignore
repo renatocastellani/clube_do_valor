@@ -10,8 +10,8 @@ __pycache__/
 *.py[cod]
 .venv/
 /venv_clube_valor/
-/data/*
-!/data/.gitkeep
+# /data/*
+# !/data/.gitkeep
 /.dbt/logs/
 /.dbt/target/
 /.dbt/.user.yml

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Resultados dos testes dbt</title>
+<style>
+:root {--ink:#16243a;--muted:#60708a;--line:#dce3ec;--surface:#fff;--canvas:#f4f7fb;--green:#087f5b;--green-bg:#e6f6ef;--red:#c92a2a;--red-bg:#fff0f0;--amber:#a05a00;--amber-bg:#fff7e6;--blue:#1769aa} *{box-sizing:border-box} body{margin:0;color:var(--ink);background:var(--canvas);font-family:Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.5} main{width:min(1120px,calc(100% - 32px));margin:40px auto 64px} header{padding:30px 32px;border-radius:16px;color:#fff;background:linear-gradient(120deg,#0b466d,#1769aa);box-shadow:0 12px 30px #0b466d2b} h1{margin:0 0 8px;font-size:clamp(1.65rem,4vw,2.4rem)} h2{margin:36px 0 14px;font-size:1.25rem} h3{margin:0;font-size:1rem;overflow-wrap:anywhere} .subtitle{margin:0;color:#d7edff} .metadata{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:24px;font-size:.94rem} .metadata strong{display:block;color:#d7edff;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase}
+.notice{margin-top:26px;padding:20px 22px;border:1px solid;border-radius:12px;background:var(--surface)}.notice.warning{border-color:#f0c36a;background:var(--amber-bg)}.notice.error{border-color:#f1aaaa;background:var(--red-bg)}.notice h2{margin:0 0 6px;font-size:1.1rem}.notice p{margin:0}.controls{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:14px;margin-top:26px}.metric{width:100%;padding:18px;border:1px solid var(--line);border-radius:12px;color:var(--ink);background:var(--surface);text-align:left;cursor:pointer}.metric:hover,.metric[aria-pressed="true"]{outline:3px solid #1769aa33;border-color:var(--blue)}.metric strong{display:block;font-size:1.9rem;line-height:1.1}.metric span,.section-note{color:var(--muted);font-size:.87rem}.metric.passed strong{color:var(--green)}.metric.failed strong{color:var(--red)}.metric.warning strong{color:var(--amber)}
+.filter-field{grid-column:span 3;display:grid;gap:5px;min-height:98px;padding:13px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:700}.filter-control{display:flex;gap:8px;align-items:center}select,button{font:inherit}select{min-width:0;flex:1;padding:4px 0;border:0;color:var(--ink);background:#fff;font-weight:700}.clear{padding:3px 0;border:0;color:var(--blue);background:#fff;cursor:pointer;white-space:nowrap}.clear:disabled{color:var(--muted);cursor:not-allowed}.filter-summary{margin:10px 0 0;color:var(--muted);font-size:.9rem}
+.origin-group{margin:18px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}.origin-heading{display:flex;align-items:start;justify-content:space-between;gap:16px;padding:17px 20px;border-bottom:1px solid var(--line);background:#fbfcfe}.origin-heading h2{margin:0;font-size:1.08rem}.origin-heading p{margin:3px 0 0;color:var(--muted);font-size:.86rem}.profile-link{display:grid;place-items:center;flex:none;width:32px;height:32px;border:1px solid var(--blue);border-radius:8px;color:var(--blue);background:#fff;font-size:1.2rem;font-weight:700;text-decoration:none}.profile-link:hover{background:#edf6ff}.profile-link.unavailable{border-color:var(--line);color:var(--muted);cursor:not-allowed}.result-card{padding:18px 20px;border-left:5px solid var(--blue);border-bottom:1px solid var(--line)}.result-card:last-child{border-bottom:0}.result-card.passed{border-left-color:var(--green)}.result-card.failed{border-left-color:var(--red)}.result-card.warning{border-left-color:var(--amber)}.result-heading{display:flex;align-items:start;justify-content:space-between;gap:18px}.identifier{margin:3px 0 0;color:var(--muted);font-family:ui-monospace,monospace;font-size:.77rem;overflow-wrap:anywhere}.badge{display:inline-block;flex:none;padding:4px 9px;border-radius:99px;font-size:.76rem;font-weight:700}.badge.passed{color:var(--green);background:var(--green-bg)}.badge.failed{color:var(--red);background:var(--red-bg)}.badge.warning{color:var(--amber);background:var(--amber-bg)}.badge.skipped{color:var(--muted);background:#eef1f5}dl{display:flex;flex-wrap:wrap;gap:8px 38px;margin:16px 0 10px}dl div{display:flex;gap:7px}dt{color:var(--muted)}dd{margin:0;font-weight:700}.message{margin:0;padding-top:11px;border-top:1px solid var(--line);color:#34445a;white-space:pre-wrap}.failure-details{margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe}.failure-details summary{color:var(--blue);font-weight:700;cursor:pointer}.table-scroll{overflow:auto;margin-top:12px}table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{padding:8px 10px;border:1px solid var(--line);text-align:left;white-space:nowrap}th{background:#eef4fa}.details-note{margin:12px 0 0;color:var(--muted);font-size:.88rem}[hidden]{display:none!important}footer{margin-top:36px;color:var(--muted);font-size:.82rem}@media(max-width:720px){main{width:min(100% - 24px,1120px);margin-top:12px}header{padding:24px}.controls{grid-template-columns:repeat(2,1fr)}.filter-field{grid-column:span 2}.result-heading{display:block}.badge{margin-top:10px}.profile-link{margin-top:6px}}
+</style></head><body><main>
+      <header><h1>Resultados dos testes dbt</h1><p class="subtitle">Qualidade dos dados na última execução de testes</p><div class="metadata"><div><strong>Última execução</strong>16/10/2026 às 09:42:59 (BRT)</div><div><strong>Comando</strong>dbt test</div><div><strong>Duração total</strong>1,85 s</div></div></header>
+      <section class="controls"><button class="metric" type="button" data-status-filter="all"><strong>56</strong><span>todos os testes</span></button><button class="metric passed" type="button" data-status-filter="passed"><strong>47</strong><span>passaram</span></button><button class="metric failed" type="button" data-status-filter="failed"><strong>6</strong><span>falharam</span></button><button class="metric warning" type="button" data-status-filter="warning"><strong>3</strong><span>alertas</span></button><button class="metric" type="button" data-status-filter="skipped"><strong>0</strong><span>ignorados</span></button><label class="filter-field" for="origin-filter">Tabela ou view validada<span class="filter-control"><select id="origin-filter"><option value="">Todas as tabelas e views</option><option value="seed.clube_valor.clients">01_RAW.clients · seed</option><option value="seed.clube_valor.transactions">01_RAW.transactions · seed</option><option value="model.clube_valor.stg_clients">02_STG.stg_clients · view</option><option value="model.clube_valor.stg_transactions">02_STG.stg_transactions · view</option><option value="model.clube_valor.int_transactions">03_INT.int_transactions · view</option><option value="model.clube_valor.dim_clients">04_MART.dim_clients · table</option><option value="model.clube_valor.fact_transactions">04_MART.fact_transactions · incremental</option><option value="model.clube_valor.mart_client_portfolio">04_MART.mart_client_portfolio · table</option></select><button id="clear-filters" class="clear" type="button">Limpar</button></span></label></section>
+      <p id="filter-summary" class="filter-summary" aria-live="polite"></p>
+      <section><h2>Resultados por tabela ou view</h2><p class="section-note">Dentro de cada objeto, falhas e alertas aparecem antes dos testes aprovados.</p><section class="origin-group" data-origin="seed.clube_valor.clients"><div class="origin-heading"><div><h2>01_RAW.clients · seed</h2><p>Schema: 01_RAW</p></div><a class="profile-link" href="../results_profiling/01_RAW.clients.html" target="_blank" rel="noopener" title="Abrir profiling de 01_RAW.clients · seed" aria-label="Abrir profiling de 01_RAW.clients · seed">↗</a></div>
+      <article class="result-card failed" data-status="failed" data-origin="seed.clube_valor.clients">
+        <div class="result-heading"><div><h3>unique_clients_client_id.135dfeaa10</h3><p class="identifier">test.clube_valor.unique_clients_client_id.135dfeaa10</p></div><span class="badge failed">Falhou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>2</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Got 2 results, configured to fail if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (2)</summary><div class="table-scroll"><table><thead><tr><th>unique_field</th><th>n_records</th></tr></thead><tbody><tr><td>C1</td><td>2</td></tr><tr><td>C6</td><td>2</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card warning" data-status="warning" data-origin="seed.clube_valor.clients">
+        <div class="result-heading"><div><h3>not_null_clients_city.913dd09c1b</h3><p class="identifier">test.clube_valor.not_null_clients_city.913dd09c1b</p></div><span class="badge warning">Alerta</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>1</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Got 1 result, configured to warn if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (1)</summary><div class="table-scroll"><table><thead><tr><th>client_id</th><th>name</th><th>city</th><th>state</th><th>created_at</th></tr></thead><tbody><tr><td>C6</td><td>Felipe Nunes</td><td></td><td>DF</td><td>2023-04-30</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.clients">
+        <div class="result-heading"><div><h3>not_null_clients_client_id.4666db7cc4</h3><p class="identifier">test.clube_valor.not_null_clients_client_id.4666db7cc4</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.clients">
+        <div class="result-heading"><div><h3>not_null_clients_created_at.2bf9af5f99</h3><p class="identifier">test.clube_valor.not_null_clients_created_at.2bf9af5f99</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.clients">
+        <div class="result-heading"><div><h3>not_null_clients_name.122d426f93</h3><p class="identifier">test.clube_valor.not_null_clients_name.122d426f93</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.clients">
+        <div class="result-heading"><div><h3>not_null_clients_state.0c36757ff1</h3><p class="identifier">test.clube_valor.not_null_clients_state.0c36757ff1</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section><section class="origin-group" data-origin="seed.clube_valor.transactions"><div class="origin-heading"><div><h2>01_RAW.transactions · seed</h2><p>Schema: 01_RAW</p></div><a class="profile-link" href="../results_profiling/01_RAW.transactions.html" target="_blank" rel="noopener" title="Abrir profiling de 01_RAW.transactions · seed" aria-label="Abrir profiling de 01_RAW.transactions · seed">↗</a></div>
+      <article class="result-card failed" data-status="failed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>assert_raw_transactions_positive_values</h3><p class="identifier">test.clube_valor.assert_raw_transactions_positive_values</p></div><span class="badge failed">Falhou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>1</dd></div><div><dt>Tempo de execução</dt><dd>0,02 s</dd></div></dl>
+        <p class="message">Got 1 result, configured to fail if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (1)</summary><div class="table-scroll"><table><thead><tr><th>transaction_id</th><th>quantity</th><th>unit_price</th></tr></thead><tbody><tr><td>T037</td><td>-50</td><td>34.0</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card failed" data-status="failed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>not_null_transactions_client_id.d57cf6e0fe</h3><p class="identifier">test.clube_valor.not_null_transactions_client_id.d57cf6e0fe</p></div><span class="badge failed">Falhou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>1</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Got 1 result, configured to fail if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (1)</summary><div class="table-scroll"><table><thead><tr><th>transaction_id</th><th>client_id</th><th>asset_ticker</th><th>operation</th><th>quantity</th><th>unit_price</th><th>transaction_date</th></tr></thead><tbody><tr><td>T021</td><td></td><td>MGLU3</td><td>BUY</td><td>100</td><td>2.9</td><td>2024-02-24</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>accepted_values_transactions_operation__BUY__SELL.6bbee43913</h3><p class="identifier">test.clube_valor.accepted_values_transactions_operation__BUY__SELL.6bbee43913</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>not_null_transactions_asset_ticker.6ec2cf83ed</h3><p class="identifier">test.clube_valor.not_null_transactions_asset_ticker.6ec2cf83ed</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>not_null_transactions_operation.63c00cde30</h3><p class="identifier">test.clube_valor.not_null_transactions_operation.63c00cde30</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>not_null_transactions_quantity.6847e65751</h3><p class="identifier">test.clube_valor.not_null_transactions_quantity.6847e65751</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>not_null_transactions_transaction_date.e2db94a221</h3><p class="identifier">test.clube_valor.not_null_transactions_transaction_date.e2db94a221</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>not_null_transactions_transaction_id.f59a044396</h3><p class="identifier">test.clube_valor.not_null_transactions_transaction_id.f59a044396</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>not_null_transactions_unit_price.8293e31256</h3><p class="identifier">test.clube_valor.not_null_transactions_unit_price.8293e31256</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="seed.clube_valor.transactions">
+        <div class="result-heading"><div><h3>unique_transactions_transaction_id.35c9fb1fc1</h3><p class="identifier">test.clube_valor.unique_transactions_transaction_id.35c9fb1fc1</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section><section class="origin-group" data-origin="model.clube_valor.stg_clients"><div class="origin-heading"><div><h2>02_STG.stg_clients · view</h2><p>Schema: 02_STG</p></div><a class="profile-link" href="../results_profiling/02_STG.stg_clients.html" target="_blank" rel="noopener" title="Abrir profiling de 02_STG.stg_clients · view" aria-label="Abrir profiling de 02_STG.stg_clients · view">↗</a></div>
+      <article class="result-card failed" data-status="failed" data-origin="model.clube_valor.stg_clients">
+        <div class="result-heading"><div><h3>unique_stg_clients_client_id.892841d178</h3><p class="identifier">test.clube_valor.unique_stg_clients_client_id.892841d178</p></div><span class="badge failed">Falhou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>2</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Got 2 results, configured to fail if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (2)</summary><div class="table-scroll"><table><thead><tr><th>unique_field</th><th>n_records</th></tr></thead><tbody><tr><td>C6</td><td>2</td></tr><tr><td>C1</td><td>2</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card warning" data-status="warning" data-origin="model.clube_valor.stg_clients">
+        <div class="result-heading"><div><h3>not_null_stg_clients_city.a3610e5a03</h3><p class="identifier">test.clube_valor.not_null_stg_clients_city.a3610e5a03</p></div><span class="badge warning">Alerta</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>1</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Got 1 result, configured to warn if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (1)</summary><div class="table-scroll"><table><thead><tr><th>client_id</th><th>name</th><th>city</th><th>state</th><th>created_at</th></tr></thead><tbody><tr><td>C6</td><td>Felipe Nunes</td><td></td><td>DF</td><td>2023-04-30</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_clients">
+        <div class="result-heading"><div><h3>not_null_stg_clients_client_id.025cfd4505</h3><p class="identifier">test.clube_valor.not_null_stg_clients_client_id.025cfd4505</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_clients">
+        <div class="result-heading"><div><h3>not_null_stg_clients_created_at.71bacb3e01</h3><p class="identifier">test.clube_valor.not_null_stg_clients_created_at.71bacb3e01</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_clients">
+        <div class="result-heading"><div><h3>not_null_stg_clients_name.3e5addee47</h3><p class="identifier">test.clube_valor.not_null_stg_clients_name.3e5addee47</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_clients">
+        <div class="result-heading"><div><h3>not_null_stg_clients_state.91bf7e979b</h3><p class="identifier">test.clube_valor.not_null_stg_clients_state.91bf7e979b</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section><section class="origin-group" data-origin="model.clube_valor.stg_transactions"><div class="origin-heading"><div><h2>02_STG.stg_transactions · view</h2><p>Schema: 02_STG</p></div><a class="profile-link" href="../results_profiling/02_STG.stg_transactions.html" target="_blank" rel="noopener" title="Abrir profiling de 02_STG.stg_transactions · view" aria-label="Abrir profiling de 02_STG.stg_transactions · view">↗</a></div>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>accepted_values_stg_transactions_operation__BUY__SELL.a8510edc70</h3><p class="identifier">test.clube_valor.accepted_values_stg_transactions_operation__BUY__SELL.a8510edc70</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>not_null_stg_transactions_asset_ticker.82aa936ca9</h3><p class="identifier">test.clube_valor.not_null_stg_transactions_asset_ticker.82aa936ca9</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>not_null_stg_transactions_client_id.d88183f457</h3><p class="identifier">test.clube_valor.not_null_stg_transactions_client_id.d88183f457</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>not_null_stg_transactions_operation.9560ac9b31</h3><p class="identifier">test.clube_valor.not_null_stg_transactions_operation.9560ac9b31</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,04 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>not_null_stg_transactions_quantity.86c5a822ad</h3><p class="identifier">test.clube_valor.not_null_stg_transactions_quantity.86c5a822ad</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,04 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>not_null_stg_transactions_transaction_date.353bde368c</h3><p class="identifier">test.clube_valor.not_null_stg_transactions_transaction_date.353bde368c</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,04 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>not_null_stg_transactions_transaction_id.1d00a8e2e4</h3><p class="identifier">test.clube_valor.not_null_stg_transactions_transaction_id.1d00a8e2e4</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>not_null_stg_transactions_unit_price.4099fb5aee</h3><p class="identifier">test.clube_valor.not_null_stg_transactions_unit_price.4099fb5aee</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.stg_transactions">
+        <div class="result-heading"><div><h3>unique_stg_transactions_transaction_id.ee9a78a396</h3><p class="identifier">test.clube_valor.unique_stg_transactions_transaction_id.ee9a78a396</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section><section class="origin-group" data-origin="model.clube_valor.int_transactions"><div class="origin-heading"><div><h2>03_INT.int_transactions · view</h2><p>Schema: 03_INT</p></div><a class="profile-link" href="../results_profiling/03_INT.int_transactions.html" target="_blank" rel="noopener" title="Abrir profiling de 03_INT.int_transactions · view" aria-label="Abrir profiling de 03_INT.int_transactions · view">↗</a></div>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.int_transactions">
+        <div class="result-heading"><div><h3>accepted_values_int_transactions_operation__BUY__SELL.cfb4d79f08</h3><p class="identifier">test.clube_valor.accepted_values_int_transactions_operation__BUY__SELL.cfb4d79f08</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.int_transactions">
+        <div class="result-heading"><div><h3>not_null_int_transactions_client_id.ee69c9039e</h3><p class="identifier">test.clube_valor.not_null_int_transactions_client_id.ee69c9039e</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.int_transactions">
+        <div class="result-heading"><div><h3>not_null_int_transactions_transaction_id.892bb8993c</h3><p class="identifier">test.clube_valor.not_null_int_transactions_transaction_id.892bb8993c</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.int_transactions">
+        <div class="result-heading"><div><h3>unique_int_transactions_transaction_id.96f65aa662</h3><p class="identifier">test.clube_valor.unique_int_transactions_transaction_id.96f65aa662</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section><section class="origin-group" data-origin="model.clube_valor.dim_clients"><div class="origin-heading"><div><h2>04_MART.dim_clients · table</h2><p>Schema: 04_MART</p></div><a class="profile-link" href="../results_profiling/04_MART.dim_clients.html" target="_blank" rel="noopener" title="Abrir profiling de 04_MART.dim_clients · table" aria-label="Abrir profiling de 04_MART.dim_clients · table">↗</a></div>
+      <article class="result-card failed" data-status="failed" data-origin="model.clube_valor.dim_clients">
+        <div class="result-heading"><div><h3>unique_dim_clients_client_id.23ed4d21ad</h3><p class="identifier">test.clube_valor.unique_dim_clients_client_id.23ed4d21ad</p></div><span class="badge failed">Falhou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>2</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Got 2 results, configured to fail if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (2)</summary><div class="table-scroll"><table><thead><tr><th>unique_field</th><th>n_records</th></tr></thead><tbody><tr><td>C1</td><td>2</td></tr><tr><td>C6</td><td>2</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card warning" data-status="warning" data-origin="model.clube_valor.dim_clients">
+        <div class="result-heading"><div><h3>not_null_dim_clients_city.320c84e864</h3><p class="identifier">test.clube_valor.not_null_dim_clients_city.320c84e864</p></div><span class="badge warning">Alerta</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>1</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Got 1 result, configured to warn if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (1)</summary><div class="table-scroll"><table><thead><tr><th>client_id</th><th>name</th><th>city</th><th>state</th><th>created_at</th></tr></thead><tbody><tr><td>C6</td><td>Felipe Nunes</td><td></td><td>DF</td><td>2023-04-30</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.dim_clients">
+        <div class="result-heading"><div><h3>not_null_dim_clients_client_id.89eccbde74</h3><p class="identifier">test.clube_valor.not_null_dim_clients_client_id.89eccbde74</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,02 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.dim_clients">
+        <div class="result-heading"><div><h3>not_null_dim_clients_created_at.d1d08edbf8</h3><p class="identifier">test.clube_valor.not_null_dim_clients_created_at.d1d08edbf8</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.dim_clients">
+        <div class="result-heading"><div><h3>not_null_dim_clients_name.8e1b416035</h3><p class="identifier">test.clube_valor.not_null_dim_clients_name.8e1b416035</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.dim_clients">
+        <div class="result-heading"><div><h3>not_null_dim_clients_state.cd0bd34fb2</h3><p class="identifier">test.clube_valor.not_null_dim_clients_state.cd0bd34fb2</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section><section class="origin-group" data-origin="model.clube_valor.fact_transactions"><div class="origin-heading"><div><h2>04_MART.fact_transactions · incremental</h2><p>Schema: 04_MART</p></div><a class="profile-link" href="../results_profiling/04_MART.fact_transactions.html" target="_blank" rel="noopener" title="Abrir profiling de 04_MART.fact_transactions · incremental" aria-label="Abrir profiling de 04_MART.fact_transactions · incremental">↗</a></div>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>accepted_values_fact_transactions_operation__BUY__SELL.7b9a0cd7bd</h3><p class="identifier">test.clube_valor.accepted_values_fact_transactions_operation__BUY__SELL.7b9a0cd7bd</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,09 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_asset_ticker.9f7ce3e8c4</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_asset_ticker.9f7ce3e8c4</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_client_id.4d2f013c68</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_client_id.4d2f013c68</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_operation.789245da88</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_operation.789245da88</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,02 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_quantity.4808479964</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_quantity.4808479964</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,02 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_transaction_date.d07e810641</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_transaction_date.d07e810641</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_transaction_id.e79bae8750</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_transaction_id.e79bae8750</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_transaction_value.e7f4621c4a</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_transaction_value.e7f4621c4a</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,02 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>not_null_fact_transactions_unit_price.93f0c2478f</h3><p class="identifier">test.clube_valor.not_null_fact_transactions_unit_price.93f0c2478f</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,02 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.fact_transactions">
+        <div class="result-heading"><div><h3>unique_fact_transactions_transaction_id.4978e2a484</h3><p class="identifier">test.clube_valor.unique_fact_transactions_transaction_id.4978e2a484</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section><section class="origin-group" data-origin="model.clube_valor.mart_client_portfolio"><div class="origin-heading"><div><h2>04_MART.mart_client_portfolio · table</h2><p>Schema: 04_MART</p></div><a class="profile-link" href="../results_profiling/04_MART.mart_client_portfolio.html" target="_blank" rel="noopener" title="Abrir profiling de 04_MART.mart_client_portfolio · table" aria-label="Abrir profiling de 04_MART.mart_client_portfolio · table">↗</a></div>
+      <article class="result-card failed" data-status="failed" data-origin="model.clube_valor.mart_client_portfolio">
+        <div class="result-heading"><div><h3>assert_no_negative_position</h3><p class="identifier">test.clube_valor.assert_no_negative_position</p></div><span class="badge failed">Falhou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>6</dd></div><div><dt>Tempo de execução</dt><dd>0,02 s</dd></div></dl>
+        <p class="message">Got 6 results, configured to fail if != 0</p>
+        <details class="failure-details"><summary>Ver registros afetados (6)</summary><div class="table-scroll"><table><thead><tr><th>client_id</th><th>asset_ticker</th><th>net_quantity</th><th>net_value</th></tr></thead><tbody><tr><td>C7</td><td>WEGE3</td><td>-60</td><td>-2430.0</td></tr><tr><td>C6</td><td>ITUB4</td><td>-50</td><td>-1445.0</td></tr><tr><td>C5</td><td>BBDC4</td><td>-400</td><td>-6140.0</td></tr><tr><td>C1</td><td>BBDC4</td><td>-50</td><td>-800.0</td></tr><tr><td>C8</td><td>VALE3</td><td>-30</td><td>-2130.0</td></tr><tr><td>C3</td><td>WEGE3</td><td>-30</td><td>-1194.0</td></tr></tbody></table></div></details>
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.mart_client_portfolio">
+        <div class="result-heading"><div><h3>not_null_mart_client_portfolio_asset_ticker.07f9210a39</h3><p class="identifier">test.clube_valor.not_null_mart_client_portfolio_asset_ticker.07f9210a39</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.mart_client_portfolio">
+        <div class="result-heading"><div><h3>not_null_mart_client_portfolio_client_id.fbf6948076</h3><p class="identifier">test.clube_valor.not_null_mart_client_portfolio_client_id.fbf6948076</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,04 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.mart_client_portfolio">
+        <div class="result-heading"><div><h3>not_null_mart_client_portfolio_net_quantity.a4cd6291b2</h3><p class="identifier">test.clube_valor.not_null_mart_client_portfolio_net_quantity.a4cd6291b2</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article>
+      <article class="result-card passed" data-status="passed" data-origin="model.clube_valor.mart_client_portfolio">
+        <div class="result-heading"><div><h3>not_null_mart_client_portfolio_net_value.257e224445</h3><p class="identifier">test.clube_valor.not_null_mart_client_portfolio_net_value.257e224445</p></div><span class="badge passed">Passou</span></div>
+        <dl><div><dt>Registros retornados</dt><dd>0</dd></div><div><dt>Tempo de execução</dt><dd>0,03 s</dd></div></dl>
+        <p class="message">Sem detalhes adicionais retornados pelo dbt.</p>
+        
+      </article></section></section><footer>Relatório gerado localmente a partir de <code>.dbt/target/run_results.json</code> e <code>manifest.json</code>.</footer></main>
+<script>
+const origin=document.querySelector('#origin-filter');if(origin){const buttons=document.querySelectorAll('[data-status-filter]'),clear=document.querySelector('#clear-filters'),summary=document.querySelector('#filter-summary');let status='all';function apply(){let visible=0;document.querySelectorAll('.result-card').forEach(card=>{const match=(status==='all'||card.dataset.status===status)&&(!origin.value||card.dataset.origin===origin.value);card.hidden=!match;if(match)visible+=1});document.querySelectorAll('.origin-group').forEach(group=>group.hidden=!group.querySelector('.result-card:not([hidden])'));buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.statusFilter===status)));clear.disabled=status==='all'&&!origin.value;summary.textContent=`${visible} teste(s) exibido(s).`}buttons.forEach(button=>button.addEventListener('click',()=>{status=button.dataset.statusFilter;apply()}));origin.addEventListener('change',apply);clear.addEventListener('click',()=>{status='all';origin.value='';apply()});apply();}
+</script></body></html>

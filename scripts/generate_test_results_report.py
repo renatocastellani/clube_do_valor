@@ -12,8 +12,8 @@ from zoneinfo import ZoneInfo
 INPUT_PATH = Path(".dbt/target/run_results.json")
 MANIFEST_PATH = Path(".dbt/target/manifest.json")
 DATABASE_PATH = Path("data/clube_valor.duckdb")
-OUTPUT_PATH = Path("data/metadata/tests/last_test_results.html")
-PROFILING_DIR = Path("data/metadata/profiling")
+OUTPUT_PATH = Path("data/metadata/results_tests/last_test_results.html")
+PROFILING_DIR = Path("data/metadata/results_profiling")
 SUCCESS_STATUSES = {"pass", "success"}
 MAX_FAILURE_ROWS = 100
 
@@ -75,7 +75,7 @@ def test_target(result, nodes):
         "label": f"{full_name} · {kind}",
         "details": f"Schema: {schema}" if schema else "Origem não identificada no manifest.json",
         "sort_key": (schema or "ZZZ", name),
-        "profile_href": f"../profiling/{profile_name}",
+        "profile_href": f"../results_profiling/{profile_name}",
         "profile_ready": (PROFILING_DIR / profile_name).exists(),
     }
 
